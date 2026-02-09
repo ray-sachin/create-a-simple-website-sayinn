@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Random Hello</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A tiny website that says hello in a random language." />
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    }
+    body {
+      display: grid;
+      place-items: center;
+      background: radial-gradient(1200px 600px at 20% 20%, rgba(0,0,0,0.04), transparent),
+                  radial-gradient(1000px 500px at 80% 70%, rgba(0,0,0,0.05), transparent);
+    }
+    .card {
+      text-align: center;
+      padding: 2.5rem 2rem;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      max-width: 680px;
+      width: min(92vw, 680px);
+    }
+    .hello {
+      font-size: clamp(2.2rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      margin: 0;
+      line-height: 1.05;
+    }
+    .lang {
+      margin: 0.4rem 0 1.6rem;
+      font-size: 0.95rem;
+      color: rgba(0,0,0,0.6);
+    }
+    .controls {
+      display: inline-flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 10px;
+      background: #4f46e5;
+      color: #fff;
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+    }
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); box-shadow: 0 3px 10px rgba(79, 70, 229, 0.35); }
+    .hint {
+      font-size: 0.85rem;
+      color: rgba(0,0,0,0.55);
+      margin-top: 0.6rem;
+    }
+    @media (prefers-color-scheme: dark) {
+      .card {
+        background: rgba(20,20,25,0.55);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      }
+      .lang, .hint {
+        color: rgba(255,255,255,0.7);
+      }
+      button { box-shadow: 0 6px 16px rgba(79, 70, 229, 0.5); }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-live="polite">
+    <h1 class="hello" id="hello">Hello</h1>
+    <p class="lang" id="lang" aria-label="Language">English</p>
+    <div class="controls">
+      <button id="shuffleBtn" type="button" aria-label="Show a random hello">Shuffle</button>
+      <button id="autoBtn" type="button" aria-pressed="false" aria-label="Toggle auto shuffle">Auto: Off</button>
+    </div>
+    <p class="hint">Press spacebar or click Shuffle to get a new random hello.</p>
+  </main>
+
+  <script>
+    // A curated list of "Hello" in various languages
+    const greetings = [
+      { text: "Hello", lang: "English" },
+      { text: "Hola", lang: "Spanish (Español)" },
+      { text: "Bonjour", lang: "French (Français)" },
+      { text: "Hallo", lang: "German (Deutsch)" },
+      { text: "Ciao", lang: "Italian (Italiano)" },
+      { text: "Olá", lang: "Portuguese (Português)" },
+      { text: "Hej", lang: "Swedish (Svenska)" },
+      { text: "Hej", lang: "Danish (Dansk)" },
+      { text: "Hei", lang: "Norwegian (Norsk)" },
+      { text: "Hei", lang: "Finnish (Suomi)" },
+      { text: "Привет", lang: "Russian (Русский)" },
+      { text: "Cześć", lang: "Polish (Polski)" },
+      { text: "Ahoj", lang: "Czech (Čeština)" },
+      { text: "Szia", lang: "Hungarian (Magyar)" },
+      { text: "Salut", lang: "Romanian (Română)" },
+      { text: "Γειά", lang: "Greek (Ελληνικά)" },
+      { text: "Merhaba", lang: "Turkish (Türkçe)" },
+      { text: "مرحبا", lang: "Arabic (العربية)" },
+      { text: "שלום", lang: "Hebrew (עברית)" },
+      { text: "नमस्ते", lang: "Hindi (हिन्दी)" },
+      { text: "নমস্কার", lang: "Bengali (বাংলা)" },
+      { text: "नमस्कार", lang: "Marathi (मराठी)" },
+      { text: "வணக்கம்", lang: "Tamil (தமிழ்)" },
+      { text: "నమస్తే", lang: "Telugu (తెలుగు)" },
+      { text: "ನಮಸ್ಕಾರ", lang: "Kannada (ಕನ್ನಡ)" },
+      { text: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ", lang: "Punjabi (ਪੰਜਾਬੀ)" },
+      { text: "こんにちは", lang: "Japanese (日本語)" },
+      { text: "你好", lang: "Chinese (中文)" },
+      { text: "안녕하세요", lang: "Korean (한국어)" },
+      { text: "สวัสดี", lang: "Thai (ไทย)" },
+      { text: "Xin chào", lang: "Vietnamese (Tiếng Việt)" },
+      { text: "Halo", lang: "Indonesian (Bahasa Indonesia)" },
+      { text: "Kamusta", lang: "Filipino (Tagalog)" },
+      { text: "S̄wạs̄dī", lang: "Romanized Thai" },
+      { text: "Salam", lang: "Persian (Farsi)" },
+      { text: "Habari", lang: "Swahili (Kiswahili)" },
+      { text: "Sawubona", lang: "Zulu (IsiZulu)" },
+      { text: "Molo", lang: "Xhosa (IsiXhosa)" },
+      { text: "Olá", lang: "Galician (Galego)" }
+    ];
+
+    const helloEl = document.getElementById('hello');
+    const langEl = document.getElementById('lang');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const autoBtn = document.getElementById('autoBtn');
+
+    let lastIndex = -1;
+    let autoTimer = null;
+
+    function randInt(max) {
+      return Math.floor(Math.random() * max);
+    }
+
+    function pickIndex() {
+      if (greetings.length < 2) return 0;
+      let idx = randInt(greetings.length);
+      // Avoid immediate repeat
+      while (idx === lastIndex) {
+        idx = randInt(greetings.length);
+      }
+      lastIndex = idx;
+      return idx;
+    }
+
+    function randomColorSeeded(text) {
+      // Create a pleasant color derived from the text for consistency
+      let hash = 0;
+      for (let i = 0; i < text.length; i++) {
+        hash = (hash << 5) - hash + text.charCodeAt(i);
+        hash |= 0;
+      }
+      const hue = Math.abs(hash) % 360;
+      return `hsl(${hue} 70% 50%)`;
+    }
+
+    function showRandomGreeting() {
+      const idx = pickIndex();
+      const { text, lang } = greetings[idx];
+      helloEl.textContent = text;
+      langEl.textContent = lang;
+      helloEl.style.color = randomColorSeeded(text);
+      document.title = `${text} • Random Hello`;
+    }
+
+    function toggleAuto() {
+      const running = Boolean(autoTimer);
+      if (running) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+        autoBtn.setAttribute('aria-pressed', 'false');
+        autoBtn.textContent = 'Auto: Off';
+      } else {
+        autoTimer = setInterval(showRandomGreeting, 1600);
+        autoBtn.setAttribute('aria-pressed', 'true');
+        autoBtn.textContent = 'Auto: On';
+      }
+    }
+
+    shuffleBtn.addEventListener('click', showRandomGreeting);
+    autoBtn.addEventListener('click', toggleAuto);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space') {
+        e.preventDefault();
+        showRandomGreeting();
+      } else if (e.code === 'KeyA') {
+        toggleAuto();
+      }
+    });
+
+    // First render
+    showRandomGreeting();
+  </script>
+</body>
+</html>
