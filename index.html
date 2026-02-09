@@ -2,211 +2,217 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Random Hello</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="A tiny website that says hello in a random language." />
+  <title>Random Hello + Reply</title>
   <style>
     :root {
-      color-scheme: light dark;
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #22d3ee;
+      --accent-2: #60a5fa;
     }
-    * { box-sizing: border-box; }
     html, body {
       height: 100%;
       margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 700px at 75% -10%, #1f2937 0%, var(--bg) 55%);
+      color: var(--text);
     }
-    body {
+    .wrap {
+      min-height: 100%;
       display: grid;
       place-items: center;
-      background: radial-gradient(1200px 600px at 20% 20%, rgba(0,0,0,0.04), transparent),
-                  radial-gradient(1000px 500px at 80% 70%, rgba(0,0,0,0.05), transparent);
+      padding: 2rem;
     }
     .card {
-      text-align: center;
-      padding: 2.5rem 2rem;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.7);
-      backdrop-filter: blur(6px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      max-width: 680px;
-      width: min(92vw, 680px);
+      width: min(720px, 92vw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
+      padding: 1.25rem;
+      backdrop-filter: blur(8px);
     }
-    .hello {
-      font-size: clamp(2.2rem, 6vw, 4.5rem);
-      font-weight: 800;
-      letter-spacing: 0.02em;
-      margin: 0;
-      line-height: 1.05;
+    header {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: .75rem;
+      color: var(--muted);
+      font-size: .95rem;
+      letter-spacing: .2px;
     }
-    .lang {
-      margin: 0.4rem 0 1.6rem;
-      font-size: 0.95rem;
-      color: rgba(0,0,0,0.6);
+    header .dot {
+      width: .55rem;
+      height: .55rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 10px rgba(34,211,238,.7);
+    }
+    h1 {
+      font-size: clamp(1.3rem, 2.2vw + 1rem, 2rem);
+      margin: 0 0 .75rem 0;
+      line-height: 1.2;
+    }
+    .pair {
+      display: grid;
+      gap: .75rem;
+      margin: 1rem 0 1.25rem;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      align-items: center;
+      gap: .75rem;
+    }
+    .label {
+      color: var(--muted);
+      font-size: .9rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+    .bubble {
+      padding: .9rem 1.05rem;
+      border-radius: 12px;
+      background: #0b1220;
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: clamp(1.1rem, 1.4vw + .8rem, 1.5rem);
+      line-height: 1.35;
+    }
+    .bubble.reply {
+      background: linear-gradient(180deg, rgba(34,211,238,0.08), rgba(96,165,250,0.08));
+      border-color: rgba(96,165,250,0.22);
     }
     .controls {
-      display: inline-flex;
-      gap: 0.6rem;
-      align-items: center;
+      display: flex;
+      gap: .6rem;
       flex-wrap: wrap;
-      justify-content: center;
+      align-items: center;
     }
     button {
       appearance: none;
       border: 0;
       border-radius: 10px;
-      background: #4f46e5;
-      color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #081225;
       font-weight: 700;
-      padding: 0.75rem 1rem;
+      padding: .75rem 1rem;
       cursor: pointer;
-      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+      box-shadow: 0 6px 18px rgba(34,211,238,0.25), inset 0 1px 0 rgba(255,255,255,0.6);
+      transition: transform .06s ease, box-shadow .15s ease, filter .15s ease;
     }
-    button:hover { transform: translateY(-1px); }
-    button:active { transform: translateY(0); box-shadow: 0 3px 10px rgba(79, 70, 229, 0.35); }
+    button:hover { filter: brightness(1.05); }
+    button:active { transform: translateY(1px) scale(0.995); }
     .hint {
-      font-size: 0.85rem;
-      color: rgba(0,0,0,0.55);
-      margin-top: 0.6rem;
+      color: var(--muted);
+      font-size: .9rem;
     }
-    @media (prefers-color-scheme: dark) {
-      .card {
-        background: rgba(20,20,25,0.55);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-      }
-      .lang, .hint {
-        color: rgba(255,255,255,0.7);
-      }
-      button { box-shadow: 0 6px 16px rgba(79, 70, 229, 0.5); }
+    footer {
+      margin-top: .75rem;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    code.kbd {
+      background: #0b1220;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 6px;
+      padding: .1rem .35rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
     }
   </style>
 </head>
 <body>
-  <main class="card" role="main" aria-live="polite">
-    <h1 class="hello" id="hello">Hello</h1>
-    <p class="lang" id="lang" aria-label="Language">English</p>
-    <div class="controls">
-      <button id="shuffleBtn" type="button" aria-label="Show a random hello">Shuffle</button>
-      <button id="autoBtn" type="button" aria-pressed="false" aria-label="Toggle auto shuffle">Auto: Off</button>
-    </div>
-    <p class="hint">Press spacebar or click Shuffle to get a new random hello.</p>
+  <main class="wrap">
+    <section class="card" aria-labelledby="title">
+      <header>
+        <span class="dot" aria-hidden="true"></span>
+        <div>Random Hello + Reply</div>
+      </header>
+
+      <h1 id="title">A simple site that shows a random “Hello” and a friendly reply</h1>
+
+      <div class="pair" aria-live="polite" aria-atomic="true">
+        <div class="row">
+          <div class="label">Greeting</div>
+          <div id="greeting" class="bubble">Hello!</div>
+        </div>
+        <div class="row">
+          <div class="label">Reply</div>
+          <div id="reply" class="bubble reply">Hi there!</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="newBtn" type="button" title="Get a new random greeting and reply (R)">
+          New random pair
+        </button>
+        <span class="hint">Press <code class="kbd">R</code> to randomize</span>
+      </div>
+
+      <footer>
+        The greeting and reply are chosen at random on load and whenever you click the button.
+      </footer>
+    </section>
   </main>
 
   <script>
-    // A curated list of "Hello" in various languages
-    const greetings = [
-      { text: "Hello", lang: "English" },
-      { text: "Hola", lang: "Spanish (Español)" },
-      { text: "Bonjour", lang: "French (Français)" },
-      { text: "Hallo", lang: "German (Deutsch)" },
-      { text: "Ciao", lang: "Italian (Italiano)" },
-      { text: "Olá", lang: "Portuguese (Português)" },
-      { text: "Hej", lang: "Swedish (Svenska)" },
-      { text: "Hej", lang: "Danish (Dansk)" },
-      { text: "Hei", lang: "Norwegian (Norsk)" },
-      { text: "Hei", lang: "Finnish (Suomi)" },
-      { text: "Привет", lang: "Russian (Русский)" },
-      { text: "Cześć", lang: "Polish (Polski)" },
-      { text: "Ahoj", lang: "Czech (Čeština)" },
-      { text: "Szia", lang: "Hungarian (Magyar)" },
-      { text: "Salut", lang: "Romanian (Română)" },
-      { text: "Γειά", lang: "Greek (Ελληνικά)" },
-      { text: "Merhaba", lang: "Turkish (Türkçe)" },
-      { text: "مرحبا", lang: "Arabic (العربية)" },
-      { text: "שלום", lang: "Hebrew (עברית)" },
-      { text: "नमस्ते", lang: "Hindi (हिन्दी)" },
-      { text: "নমস্কার", lang: "Bengali (বাংলা)" },
-      { text: "नमस्कार", lang: "Marathi (मराठी)" },
-      { text: "வணக்கம்", lang: "Tamil (தமிழ்)" },
-      { text: "నమస్తే", lang: "Telugu (తెలుగు)" },
-      { text: "ನಮಸ್ಕಾರ", lang: "Kannada (ಕನ್ನಡ)" },
-      { text: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ", lang: "Punjabi (ਪੰਜਾਬੀ)" },
-      { text: "こんにちは", lang: "Japanese (日本語)" },
-      { text: "你好", lang: "Chinese (中文)" },
-      { text: "안녕하세요", lang: "Korean (한국어)" },
-      { text: "สวัสดี", lang: "Thai (ไทย)" },
-      { text: "Xin chào", lang: "Vietnamese (Tiếng Việt)" },
-      { text: "Halo", lang: "Indonesian (Bahasa Indonesia)" },
-      { text: "Kamusta", lang: "Filipino (Tagalog)" },
-      { text: "S̄wạs̄dī", lang: "Romanized Thai" },
-      { text: "Salam", lang: "Persian (Farsi)" },
-      { text: "Habari", lang: "Swahili (Kiswahili)" },
-      { text: "Sawubona", lang: "Zulu (IsiZulu)" },
-      { text: "Molo", lang: "Xhosa (IsiXhosa)" },
-      { text: "Olá", lang: "Galician (Galego)" }
-    ];
+    (function () {
+      const greetings = [
+        "Hello!", "Hi!", "Hey!", "Howdy!", "Yo!", "Ahoy!",
+        "Greetings!", "Good day!", "Welcome!", "Hiya!",
+        "Bonjour!", "Hola!", "Ciao!", "Namaste!", "Salaam!",
+        "Shalom!", "Konnichiwa!", "Guten Tag!", "Privet!", "Hej!"
+      ];
 
-    const helloEl = document.getElementById('hello');
-    const langEl = document.getElementById('lang');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const autoBtn = document.getElementById('autoBtn');
+      const replies = [
+        "Hi there!", "Hello!", "Heya!", "Nice to see you!",
+        "How's it going?", "Great to meet you!", "Howdy!",
+        "What’s up?", "Good to see you!", "Welcome aboard!",
+        "Pleasure to meet you.", "Lovely to see you.", "Yo!",
+        "Right back at you!", "Thanks for dropping by!",
+        "Hope you’re well!", "How can I help?", "Happy to be here!",
+        "Hi! What’s new?", "Hey there!"
+      ];
 
-    let lastIndex = -1;
-    let autoTimer = null;
+      const greetingEl = document.getElementById('greeting');
+      const replyEl = document.getElementById('reply');
+      const btn = document.getElementById('newBtn');
 
-    function randInt(max) {
-      return Math.floor(Math.random() * max);
-    }
+      let lastGreeting = null;
+      let lastReply = null;
 
-    function pickIndex() {
-      if (greetings.length < 2) return 0;
-      let idx = randInt(greetings.length);
-      // Avoid immediate repeat
-      while (idx === lastIndex) {
-        idx = randInt(greetings.length);
+      function randomChoice(arr, last) {
+        if (arr.length === 0) return "";
+        if (arr.length === 1) return arr[0];
+        let pick;
+        do {
+          pick = arr[Math.floor(Math.random() * arr.length)];
+        } while (pick === last);
+        return pick;
       }
-      lastIndex = idx;
-      return idx;
-    }
 
-    function randomColorSeeded(text) {
-      // Create a pleasant color derived from the text for consistency
-      let hash = 0;
-      for (let i = 0; i < text.length; i++) {
-        hash = (hash << 5) - hash + text.charCodeAt(i);
-        hash |= 0;
+      function randomizePair() {
+        const g = randomChoice(greetings, lastGreeting);
+        const r = randomChoice(replies, lastReply);
+        lastGreeting = g;
+        lastReply = r;
+        greetingEl.textContent = g;
+        replyEl.textContent = r;
       }
-      const hue = Math.abs(hash) % 360;
-      return `hsl(${hue} 70% 50%)`;
-    }
 
-    function showRandomGreeting() {
-      const idx = pickIndex();
-      const { text, lang } = greetings[idx];
-      helloEl.textContent = text;
-      langEl.textContent = lang;
-      helloEl.style.color = randomColorSeeded(text);
-      document.title = `${text} • Random Hello`;
-    }
+      btn.addEventListener('click', randomizePair);
+      document.addEventListener('keydown', (e) => {
+        if (e.key.toLowerCase() === 'r') {
+          e.preventDefault();
+          randomizePair();
+        }
+      });
 
-    function toggleAuto() {
-      const running = Boolean(autoTimer);
-      if (running) {
-        clearInterval(autoTimer);
-        autoTimer = null;
-        autoBtn.setAttribute('aria-pressed', 'false');
-        autoBtn.textContent = 'Auto: Off';
-      } else {
-        autoTimer = setInterval(showRandomGreeting, 1600);
-        autoBtn.setAttribute('aria-pressed', 'true');
-        autoBtn.textContent = 'Auto: On';
-      }
-    }
-
-    shuffleBtn.addEventListener('click', showRandomGreeting);
-    autoBtn.addEventListener('click', toggleAuto);
-
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space') {
-        e.preventDefault();
-        showRandomGreeting();
-      } else if (e.code === 'KeyA') {
-        toggleAuto();
-      }
-    });
-
-    // First render
-    showRandomGreeting();
+      // Initial render
+      randomizePair();
+    })();
   </script>
 </body>
 </html>
